@@ -2,6 +2,7 @@ import Canvas from './Canvas'
 import Stage from './Stage'
 import Snake, { SnakeCommand } from './Snake'
 import Target from './Target'
+import Score from './Score'
 import { comparePosition } from './Position'
 
 enum DirectionKeyCode {
@@ -16,6 +17,7 @@ export default class GameController {
   private stage = new Stage(this.canvas)
   private snake = new Snake(this.canvas)
   private target = new Target(this.canvas)
+  private score = new Score(this.canvas)
   private currentDirectionKeyCode: DirectionKeyCode
 
   constructor(private canvas: Canvas) {
@@ -26,7 +28,6 @@ export default class GameController {
     this.snake.pushCommand(SnakeCommand.Right)
     this.target.generate()
     this.update()
-    console.log(this)
     window.addEventListener('keydown', this.keydownHandler)
   }
 
@@ -34,12 +35,12 @@ export default class GameController {
     this.stage.draw()
     this.snake.move()
 
-    const targetPosition = this.target.getPosition()!
-    const snakePosition = this.snake.getPosition()
-    if (comparePosition(snakePosition, targetPosition)) {
+    if (comparePosition(this.snake.getPosition(), this.target.getPosition()!)) {
       this.snake.lengthen()
+      this.score.increment()
       this.target.generate()
     }
+    this.score.draw()
     this.target.draw()
     this.scheduleNextUpdate()
   }

@@ -7,14 +7,6 @@ export default class Canvas {
     this.gridSize = gridSize
   }
 
-  public getCanvas() {
-    return this.canvasElement
-  }
-
-  public getContext() {
-    return this.canvasElement.getContext('2d')!
-  }
-
   public drawRect(
     x: number,
     y: number,
@@ -30,6 +22,27 @@ export default class Canvas {
       width * this.gridSize,
       height * this.gridSize,
     )
+  }
+
+  public drawText(
+    text: string,
+    x: number,
+    y: number,
+    color: string,
+    font: string,
+  ) {
+    const ctx = this.getContext()
+    ctx.fillStyle = color
+    ctx.font = font
+    ctx.fillText(text, x, y)
+  }
+
+  public getCanvas() {
+    return this.canvasElement
+  }
+
+  public getContext() {
+    return this.canvasElement.getContext('2d')!
   }
 
   public getGriddedWidth() {
