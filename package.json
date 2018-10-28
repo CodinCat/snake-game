@@ -1,0 +1,12 @@
+{
+  "name": "snake-game",
+  "main": "src/index.html",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "devDependencies": {
+    "parcel": "^1.10.3",
+    "typescript": "^3.1.3"
+  }
+}
