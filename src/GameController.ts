@@ -10,6 +10,10 @@ enum DirectionKeyCode {
   Up,
   Right,
   Down,
+  W = 87,
+  A = 65,
+  S = 83,
+  D = 68,
 }
 
 export default class GameController {
@@ -34,7 +38,6 @@ export default class GameController {
   private update() {
     this.stage.draw()
     this.snake.move()
-
     if (comparePosition(this.snake.getPosition(), this.target.getPosition()!)) {
       this.snake.lengthen()
       this.score.increment()
@@ -65,15 +68,19 @@ export default class GameController {
     this.currentDirectionKeyCode = event.keyCode
     switch (event.keyCode) {
       case DirectionKeyCode.Left:
+      case DirectionKeyCode.A:
         this.snake.pushCommand(SnakeCommand.Left)
         break
       case DirectionKeyCode.Up:
+      case DirectionKeyCode.W:
         this.snake.pushCommand(SnakeCommand.Up)
         break
       case DirectionKeyCode.Right:
+      case DirectionKeyCode.D:
         this.snake.pushCommand(SnakeCommand.Right)
         break
       case DirectionKeyCode.Down:
+      case DirectionKeyCode.S:
         this.snake.pushCommand(SnakeCommand.Down)
     }
   }
