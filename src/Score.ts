@@ -11,6 +11,10 @@ export default class Score {
     this.score++
   }
 
+  public setScore(score: number) {
+    this.score = score
+  }
+
   public draw() {
     this.canvas.drawText(
       `Score: ${this.score}`,

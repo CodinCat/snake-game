@@ -8,18 +8,30 @@ export enum SnakeCommand {
   Down,
 }
 
+const INITIAL_LENGTH = 15
+const getInitialPosition = () => ({ x: INITIAL_LENGTH - 1, y: 20 })
+const getInitialSnake = () =>
+  Array.from({ length: INITIAL_LENGTH }, (_, i) => ({
+    x: i,
+    y: 20,
+  }))
+
 export default class Snake {
-  private snake: Position[] = []
-  private position: Position = { x: 20, y: 20 }
+  private snake: Position[] = getInitialSnake()
+  private position: Position = getInitialPosition()
+  private tail = INITIAL_LENGTH
   private stepX = 0
   private stepY = 0
-  private tail = 5
   private commandQueue: SnakeCommand[] = []
+  private collisionListener: Function[] = []
 
   constructor(private canvas: Canvas, private color = 'mediumseagreen') {
     this.canvas = canvas
     this.color = color
-    this.snake = []
+  }
+
+  public addCollisionListener(fn) {
+    this.collisionListener.push(fn)
   }
 
   public move() {
@@ -28,6 +40,11 @@ export default class Snake {
     this.position.y += this.stepY
     this.handleBoundaryCases()
     this.drawSnake()
+    if (this.selfCollided()) {
+      this.collisionListener.forEach(fn => fn())
+      // return
+    }
+
     this.snake.push({ ...this.position })
     while (this.snake.length > this.tail) {
       this.snake.shift()
@@ -36,6 +53,25 @@ export default class Snake {
 
   public lengthen() {
     this.tail++
+  }
+
+  public selfCollided() {
+    for (let i = 0; i < this.snake.length; i++) {
+      if (
+        this.position.x === this.snake[i].x &&
+        this.position.y === this.snake[i].y
+      ) {
+        return true
+      }
+    }
+    return false
+  }
+
+  public die() {
+    this.tail = INITIAL_LENGTH
+    this.snake = getInitialSnake()
+    this.position = getInitialPosition()
+    this.commandQueue = []
   }
 
   public getPosition() {
@@ -65,9 +101,9 @@ export default class Snake {
   }
 
   private drawSnake() {
-    for (let i = 0; i < this.snake.length; i++) {
-      this.canvas.drawRect(this.snake[i].x, this.snake[i].y, 1, 1, this.color)
-    }
+    this.snake.forEach(snake => {
+      this.canvas.drawRect(snake.x, snake.y, 1, 1, this.color)
+    })
   }
 
   private executeNextCommand() {

@@ -42,10 +42,11 @@ export default class GameController {
   }
 
   public start() {
+    this.snake.addCollisionListener(this.handleSnakeCollide)
     this.snake.pushCommand(SnakeCommand.Right)
     this.target.generate()
     this.update()
-    window.addEventListener('keydown', this.keydownHandler)
+    window.addEventListener('keydown', this.handleKeyDown)
   }
 
   private update() {
@@ -67,7 +68,13 @@ export default class GameController {
     }, this.speed)
   }
 
-  private keydownHandler = event => {
+  private handleSnakeCollide = () => {
+    this.snake.die()
+    this.snake.pushCommand(SnakeCommand.Right)
+    this.score.setScore(0)
+  }
+
+  private handleKeyDown = event => {
     const directionKeyCode = toDirectionKeyCode(event.keyCode)
     if (
       directionKeyCode === undefined ||
