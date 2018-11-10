@@ -10,10 +10,23 @@ enum DirectionKeyCode {
   Up,
   Right,
   Down,
-  W = 87,
-  A = 65,
-  S = 83,
-  D = 68,
+}
+
+function toDirectionKeyCode(keyCode: number): DirectionKeyCode | undefined {
+  if (keyCode in DirectionKeyCode) {
+    return keyCode
+  }
+  const W = 87
+  const A = 65
+  const S = 83
+  const D = 68
+  const map = {
+    [W]: DirectionKeyCode.Up,
+    [A]: DirectionKeyCode.Left,
+    [S]: DirectionKeyCode.Down,
+    [D]: DirectionKeyCode.Right,
+  }
+  return map[keyCode]
 }
 
 export default class GameController {
@@ -55,32 +68,27 @@ export default class GameController {
   }
 
   private keydownHandler = event => {
-    if (!(event.keyCode in DirectionKeyCode)) {
-      return
-    }
+    const directionKeyCode = toDirectionKeyCode(event.keyCode)
     if (
-      event.keyCode === this.currentDirectionKeyCode ||
-      event.keyCode + 2 === this.currentDirectionKeyCode ||
-      event.keyCode - 2 === this.currentDirectionKeyCode
+      directionKeyCode === undefined ||
+      directionKeyCode === this.currentDirectionKeyCode ||
+      directionKeyCode + 2 === this.currentDirectionKeyCode ||
+      directionKeyCode - 2 === this.currentDirectionKeyCode
     ) {
       return
     }
-    this.currentDirectionKeyCode = event.keyCode
-    switch (event.keyCode) {
+    this.currentDirectionKeyCode = directionKeyCode
+    switch (directionKeyCode) {
       case DirectionKeyCode.Left:
-      case DirectionKeyCode.A:
         this.snake.pushCommand(SnakeCommand.Left)
         break
       case DirectionKeyCode.Up:
-      case DirectionKeyCode.W:
         this.snake.pushCommand(SnakeCommand.Up)
         break
       case DirectionKeyCode.Right:
-      case DirectionKeyCode.D:
         this.snake.pushCommand(SnakeCommand.Right)
         break
       case DirectionKeyCode.Down:
-      case DirectionKeyCode.S:
         this.snake.pushCommand(SnakeCommand.Down)
     }
   }
